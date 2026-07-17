@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html class="dark">
+<head><title>Test</title></head>
+<body style="background:#0f0f1a;color:white">
+<div id="root">If you see this, React did NOT mount</div>
+<script type="module">
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+console.log('React imported:', typeof React)
+const root = ReactDOM.createRoot(document.getElementById('root'))
+root.render(React.createElement('h1', null, 'React mounted! ✅'))
+console.log('Render called')
+</script>
+</body>
+</html>
