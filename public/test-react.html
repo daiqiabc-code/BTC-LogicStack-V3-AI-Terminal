@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head><title>React Test</title></head>
+<body style="background:#0f0f1a;color:white;font-family:monospace;padding:40px">
+  <div id="root">Root not rendered</div>
+  <script type="importmap">
+  {
+    "imports": {
+      "react": "http://localhost:5173/node_modules/.vite/deps/react.js?v=3c573720",
+      "react-dom/client": "http://localhost:5173/node_modules/.vite/deps/react-dom_client.js?v=3c573720"
+    }
+  }
+  </script>
+  <script type="module">
+    import React from 'react';
+    import ReactDOM from 'react-dom/client';
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(React.createElement('div', null, [
+      React.createElement('h1', {style: {color: '#22c55e'}}, '✅ React Test Passed'),
+      React.createElement('p', null, 'React is working correctly.'),
+    ]));
+  </script>
+</body>
+</html>
