@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BTC Logic Stack V3 - AI Quant Trading Terminal</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { height: 100%; background: #0f0f1a; color: #e0e0e0; }
+      #root-loading {
+        position: fixed; inset: 0; z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        background: #0f0f1a; color: #e0e0e0;
+        font-family: monospace; font-size: 14px;
+        flex-direction: column; gap: 12px;
+      }
+      #root-loading .spinner {
+        width: 32px; height: 32px;
+        border: 3px solid #1e293b; border-top-color: #2979ff;
+        border-radius: 50%; animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      #root-error {
+        display: none; position: fixed; inset: 0; overflow: auto; z-index: 9999;
+        background: #0f0f1a; color: #e0e0e0;
+        font-family: monospace; padding: 40px;
+      }
+      #root-error h1 { color: #ff4444; font-size: 20px; margin-bottom: 16px; }
+      #root-error pre {
+        background: #1a1a2e; padding: 16px; border-radius: 8px;
+        font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-all;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root-loading">
+      <div class="spinner"></div>
+      <div>BTC LogicStack V3 加载中...</div>
+      <div style="font-size:11px;color:#6b7280">正在连接Binance数据源</div>
+    </div>
+    <div id="root"></div>
+    <div id="root-error"></div>
+
+    <script>
+      window.__v3_errors = [];
+      window.onerror = function(msg, url, line, col, err) {
+        window.__v3_errors.push({msg: msg, url: url, line: line, err: err});
+        var el = document.getElementById('root-error');
+        var loading = document.getElementById('root-loading');
+        if (el && window.__v3_errors.length > 0) {
+          el.style.display = 'block';
+          if (loading) loading.style.display = 'none';
+          el.innerHTML = '<h1>⚠️ JavaScript Error</h1><pre>' +
+            window.__v3_errors.map(function(e) {
+              return String(e.msg) + (e.err ? '\n' + (e.err.stack || '') : '') + (e.url ? '\n  at ' + e.url + ':' + e.line : '');
+            }).join('\n\n---\n\n') + '</pre>';
+        }
+      };
+      window.addEventListener('unhandledrejection', function(e) {
+        window.onerror('Promise: ' + (e.reason?.message || String(e.reason)), '', 0, 0, e.reason);
+      });
+      var rootEl = document.getElementById('root');
+      var observer = new MutationObserver(function() {
+        if (rootEl && rootEl.children.length > 0) {
+          var loading = document.getElementById('root-loading');
+          if (loading) loading.style.display = 'none';
+          observer.disconnect();
+        }
+      });
+      if (rootEl) observer.observe(rootEl, { childList: true, subtree: true });
+      setTimeout(function() {
+        if (!rootEl || rootEl.children.length === 0) {
+          document.getElementById('root-loading').style.display = 'none';
+          document.getElementById('root-error').style.display = 'block';
+          if (window.__v3_errors.length > 0) {
+            document.getElementById('root-error').innerHTML = '<h1>⏱️ Timeout after 10s</h1><pre>' +
+              window.__v3_errors.map(function(e){return String(e.msg)+(e.url?'\n  at '+e.url+':'+e.line:'')}).join('\n\n')+'</pre>';
+          } else {
+            document.getElementById('root-error').innerHTML = '<h1>⏱️ Timeout after 10s</h1><pre>No errors captured. Check browser console (F12) for:\n• Module load failures (Network tab)\n• CORS errors\n• Content Security Policy violations\n• Other runtime errors</pre>';
+          }
+        }
+      }, 10000);
+    </script>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
